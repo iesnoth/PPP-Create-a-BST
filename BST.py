@@ -108,6 +108,71 @@ class BST:
             else:
                 self.add_node(current.left, new)
 
+    def remove(self, node):
+        if type(node) != int and type(node) != BSTNode:
+            raise ValueError("You must enter an int or BSTNode")
+        if type(node) is BSTNode:
+            node = node.data
+        if node not in self.contents:
+            raise ValueError("Value not found in tree.")
+        self.remove_node(self.root, node)
+
+    def remove_node(self, current, remove_value, previous=None):
+        if current.data == remove_value:
+            # if current has no children:
+            if current.right == None and current.left == None:
+                # removing itself as a child
+                if current == previous.right:
+                    previous.right = None
+                    self.contents.remove(remove_value)
+                else:
+                    previous.left = None
+                    self.contents.remove(remove_value)
+            # if current has left child
+            elif current.right == None and current.left != None:
+                # if current is the right child, it sets its left child as the previous's new right
+                if current == previous.right:
+                    previous.right = current.left
+                    self.contents.remove(remove_value)
+                # if it's the left child, it sets its left as the previous's new left
+                else:
+                    previous.left = current.left
+                    self.contents.remove(remove_value)
+            # if current has right child
+            elif current.left == None and current.right != None:
+                # if current is the right child, it sets its left child as the previous's new right
+                if current == previous.left:
+                    previous.left = current.right
+                    self.contents.remove(remove_value)
+                # if it's the left child, it sets its left as the previous's new left
+                else:
+                    previous.right = current.right
+                    self.contents.remove(remove_value)
+            # if current to be removed as 2 children:
+            else:
+                self.nodes = []
+                self.traverse_tree(current)  # get list of all descendents
+                self.nodes.remove(remove_value)  # remove the node we want gone
+                self.contents.remove(remove_value)
+                if current == previous.right:
+                    previous.right = None
+                else:
+                    previous.left = None
+                for node in self.nodes:
+                    self.add(node)
+
+        elif current.data < remove_value:
+            self.remove_node(current.right, remove_value, previous=current)
+        
+        elif current.data > remove_value:
+            self.remove_node(current.left, remove_value, previous=current)
+
+    def traverse_tree(self, node):
+        if node != None:
+            self.traverse_tree(node.right)
+            self.nodes.append(node.data)
+            self.traverse_tree(node.left)
+
 
 # test part 2
 bst = BST()
@@ -141,46 +206,8 @@ bst.add(node14)
 bst.add(node4)
 bst.add(node7)
 bst.add(node13)
+
+#Test bonus
+bst.remove(1) #leaf/end node
+bst.remove(10) #middle node
 print(bst)
-
-# # Part 3: Add functionality to your BST class
-# def add(self,node):
-#     #data wrong type
-#     if type(node) != int and type(node) != BSTNode:
-#         raise ValueError("You must pass an int or a BSTNode")
-
-#     #data int, make new BSTNode
-#     if type(node) == int:
-#      node = BSTNode(node)
-
-#     #node already in tree
-#     if node.data in self.contents:
-#      return
-
-#     #tree empty
-#     if self.root == None:
-#         self.root = node
-#         self.contents.append(node.data)
-#         return
-
-#     #call new (recursive) function; don't need to check other conditions again
-#     self.add_node(self.root, node)
-
-# def add_node(self, cur_node, new_node):
-#     # New node bigger - go right
-#     if new_node.data > cur_node.data:
-#         if cur_node.right == None:
-#             cur_node.right = new_node
-#             self.contents.append(new_node.data)
-#             return
-#         else:
-#         #recurse/traverse
-#             self.add_node(cur_node.right, new_node)
-#     else: #new node smaller, go left
-#         if cur_node.left == None:
-#             cur_node.left = new_node
-#             self.contents.append(new_node.data)
-#             return
-#         else:
-#         #recurse/traverse
-#             self.add_node(cur_node.left, new_node)
