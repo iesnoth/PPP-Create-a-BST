@@ -26,19 +26,22 @@ class BSTNode:
     def __repr__(self):
         return f'This is the repr func for this node: {self.data}'
 
-#Test part 1
-# node1 = BSTNode(3)
-# print(node1)  # 3
 
-# node2 = BSTNode(4, left=node1)
-# print(node2)  # 4
+# Test part 1
+node1 = BSTNode(3)
+print(node1)  # 3
 
-# node3 = BSTNode()
-# print(node3)  # None
-# node3.data = 5
-# print(node3)  # 5
+node2 = BSTNode(4, left=node1)
+print(node2)  # 4
+
+node3 = BSTNode()
+print(node3)  # None
+node3.data = 5
+print(node3)  # 5
 
 # Part 2: Create a BST class
+
+
 class BST:
     def __init__(self, root=None):
         self.root = root
@@ -65,13 +68,13 @@ class BST:
             self.print_tree(node.right, level + 1)
             self.output += ' ' * 4 * level + '->' + str(node.data) + ' '
             self.print_tree(node.left, level + 1)
-    
-    def add(self,node):
+
+    def add(self, node):
         # If the input is of any type other than BSTNode or int, raise a ValueError.
-        if type(node) is not int and type(node) is not BSTNode:
+        if type(node) != int and type(node) != BSTNode:
             raise ValueError("You must enter an int or BSTNode")
         # If the input is an int, create a BSTNode with that int as the value.
-        if type(node) is int:
+        if type(node) == int:
             node = BSTNode(node)
         # If the input is an int, create a BSTNode with that int as the value.
         if node.data in self.contents:
@@ -81,36 +84,43 @@ class BST:
             self.root = node
             self.contents.append(node.data)
             return
-    #The node must be added in the correct spot on the tree.
+
+        self.add_node(self.root, node)
+    # The node must be added in the correct spot on the tree.
     # Use a helper function, add_node(), to do this.
-    def add_node(self,current,new):
+
+    def add_node(self, current, new):
+        # new node larger, go right
         if new.data > current.data:
             if current.right == None:
                 current.right = new
                 self.contents.append(new.data)
                 return
-            #recursively calling the function to compare the new data to the right branch
+            # recursively calling the function to compare the new data to the right branch
             else:
-                self.add_node(current.right,new)
+                self.add_node(current.right, new)
+        # new node smaller, go left
         else:
             if current.left == None:
                 current.left = new
                 self.contents.append(new.data)
-            else: self.add_node(current.left,new)
+                return
+            else:
+                self.add_node(current.left, new)
 
-        
-#test part 2
-# bst = BST()
-# print(bst)
 
-# bst.root = node2
-# print(bst)
+# test part 2
+bst = BST()
+print(bst)
 
-# node2.right = node3
-# print(bst)
+bst.root = node2
+print(bst)
 
-#test functionality
-#create tree from image
+node2.right = node3
+print(bst)
+
+# test functionality
+# create tree from image
 node8 = BSTNode(8)
 node3 = BSTNode(3)
 node10 = BSTNode(10)
@@ -131,3 +141,46 @@ bst.add(node14)
 bst.add(node4)
 bst.add(node7)
 bst.add(node13)
+print(bst)
+
+# # Part 3: Add functionality to your BST class
+# def add(self,node):
+#     #data wrong type
+#     if type(node) != int and type(node) != BSTNode:
+#         raise ValueError("You must pass an int or a BSTNode")
+
+#     #data int, make new BSTNode
+#     if type(node) == int:
+#      node = BSTNode(node)
+
+#     #node already in tree
+#     if node.data in self.contents:
+#      return
+
+#     #tree empty
+#     if self.root == None:
+#         self.root = node
+#         self.contents.append(node.data)
+#         return
+
+#     #call new (recursive) function; don't need to check other conditions again
+#     self.add_node(self.root, node)
+
+# def add_node(self, cur_node, new_node):
+#     # New node bigger - go right
+#     if new_node.data > cur_node.data:
+#         if cur_node.right == None:
+#             cur_node.right = new_node
+#             self.contents.append(new_node.data)
+#             return
+#         else:
+#         #recurse/traverse
+#             self.add_node(cur_node.right, new_node)
+#     else: #new node smaller, go left
+#         if cur_node.left == None:
+#             cur_node.left = new_node
+#             self.contents.append(new_node.data)
+#             return
+#         else:
+#         #recurse/traverse
+#             self.add_node(cur_node.left, new_node)
